@@ -2,8 +2,6 @@ require_relative '../../../app/api'
 require 'rack/test'
 
 module ExpenseTracker
-  RecordResult = Struct.new(:success?, :expense_id, :error_message)
-
   RSpec.describe API do
     include Rack::Test::Methods
 
@@ -19,6 +17,11 @@ module ExpenseTracker
         let(:expense) { { 'some' => 'data'} }
 
         # stubbing method call with the help of RecordResult
+        # if we do not have a Ledger class defined we can stub
+        # the method call. If we have it defined it must have
+        # the method defined its called Verifying Doubles
+        # which is provided by RSpec
+        # though ledger is always the stub we defined in let()
         before do
           allow(ledger).to receive(:record)
             .with(expense)
