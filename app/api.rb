@@ -10,8 +10,15 @@ module ExpenseTracker
 
     post '/expenses' do
       expense = JSON.parse(request.body.read)
+      # result in unit tests is a stub
       result = @ledger.record(expense)
-      JSON.generate('expense_id' => result.expense_id)
+
+      if result.success?
+        JSON.generate('expense_id' => result.expense_id)
+      else
+        status 422
+        JSON.generate('error' => result.error_message)
+      end
     end
     # trailing colon indicates a required parameter, if missing will raise error
     # or we can provide a default value after the trailing colon
