@@ -1,6 +1,11 @@
-example_id                           | status | run_time        |
------------------------------------- | ------ | --------------- |
-./spec/unit/app/api_spec.rb[1:1:1:1] | failed | 0.0004 seconds  |
-./spec/unit/app/api_spec.rb[1:1:1:2] | failed | 0.0062 seconds  |
-./spec/unit/app/api_spec.rb[1:1:2:1] | failed | 0.0002 seconds  |
-./spec/unit/app/api_spec.rb[1:1:2:2] | failed | 0.00027 seconds |
+example_id                                         | status  | run_time        |
+-------------------------------------------------- | ------- | --------------- |
+./spec/acceptance/expense_tracker_api_spec.rb[1:1] | pending | 0.01978 seconds |
+./spec/unit/app/api_spec.rb[1:1:1:1]               | passed  | 0.00619 seconds |
+./spec/unit/app/api_spec.rb[1:1:1:2]               | passed  | 0.00171 seconds |
+./spec/unit/app/api_spec.rb[1:1:2:1]               | passed  | 0.00355 seconds |
+./spec/unit/app/api_spec.rb[1:1:2:2]               | passed  | 0.00164 seconds |
+./spec/unit/app/api_spec.rb[1:2:1:1]               | passed  | 0.00331 seconds |
+./spec/unit/app/api_spec.rb[1:2:1:2]               | passed  | 0.02971 seconds |
+./spec/unit/app/api_spec.rb[1:2:2:1]               | passed  | 0.03502 seconds |
+./spec/unit/app/api_spec.rb[1:2:2:2]               | passed  | 0.00209 seconds |

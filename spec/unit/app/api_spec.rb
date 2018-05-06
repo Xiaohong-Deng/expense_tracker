@@ -9,8 +9,62 @@ module ExpenseTracker
       API.new(ledger: ledger)
     end
 
+    # by default JSON can not convert strings to struct
+    # need to turn on a switch and require json/add/struct
+    def parsed(payload, to_struct = false)
+      return JSON.parse(payload) unless to_struct
+      JSON.parse(payload, create_additions: to_struct)
+    end
+
     # stubbing
     let(:ledger) { instance_double('ExpenseTracker::Ledger') }
+
+    describe 'GET /expenses/:date' do
+      let(:date) { '2017-06-10' }
+
+      context 'when expenses exist on the given date' do
+        let(:starbucks) { Record.new('Starbucks', 5.00, '2017-06-10') }
+        let(:zoo) { Record.new('Zoo', 4.75, '2017-06-10') }
+
+        before do
+          allow(ledger).to receive(:expenses_on)
+            .with(date)
+            .and_return([starbucks, zoo])
+        end
+
+        it 'returns the expense records' do
+          get '/expenses/2017-06-10'
+
+          expect(parsed(last_response.body, true)).to contain_exactly(starbucks, zoo)
+        end
+
+        it 'responds with a 200 (ok)' do
+          get '/expenses/2017-06-10'
+
+          expect(last_response.status).to eq 200
+        end
+      end
+
+      context 'when there are no expenses on the given date' do
+        before do
+          allow(ledger).to receive(:expenses_on)
+            .with(date)
+            .and_return([])
+        end
+
+        it 'return an empty array as JSON' do
+          get '/expenses/2017-06-10'
+
+          expect(parsed(last_response.body)).to be_empty
+        end
+
+        it 'responds with 200 (ok)' do
+          get '/expenses/2017-06-10'
+
+          expect(last_response.status).to eq 200
+        end
+      end
+    end
 
     describe 'POST /expenses' do
       context 'when the expense is successfully recorded' do
@@ -34,13 +88,12 @@ module ExpenseTracker
           # post is not a stub it is real
           post '/expenses', JSON.generate(expense)
 
-          parsed = JSON.parse(last_response.body)
-          expect(parsed).to include('expense_id' => 417)
+          expect(parsed(last_response.body)).to include('expense_id' => 417)
         end
 
         it 'responds with 200 (OK)' do
           # pending 'not with 200 yet'
-          post '/expense', JSON.generate(expense)
+          post '/expenses', JSON.generate(expense)
           expect(last_response.status).to eq 200
         end
       end
@@ -57,8 +110,7 @@ module ExpenseTracker
         it 'returns an error message' do
           post '/expenses', JSON.generate(expense)
 
-          parsed = JSON.parse(last_response.body)
-          expect(parsed).to include('error' => 'Expense incomplete')
+          expect(parsed(last_response.body)).to include('error' => 'Expense incomplete')
         end
 
         it 'responds with a 422 (Unprocessable entity)' do
