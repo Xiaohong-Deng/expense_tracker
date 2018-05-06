@@ -3,7 +3,12 @@ require 'json'
 require_relative '../../app/api.rb'
 
 module ExpenseTracker
-  RSpec.describe 'Expense Tracker API' do
+  # :db tag is needed to ensure spec executed in a db transaction
+  # all specs that touches db need it so in general it is required
+  # for all specs that touches db
+  # but we can still touches db without this tag though running in
+  # a transaction doesnt happen
+  RSpec.describe 'Expense Tracker API', :db do
     include Rack::Test::Methods
 
     def app
