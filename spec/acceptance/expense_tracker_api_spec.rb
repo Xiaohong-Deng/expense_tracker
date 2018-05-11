@@ -21,11 +21,10 @@ module ExpenseTracker
 
       parsed = JSON.parse(last_response.body)
       expect(parsed).to include('expense_id' => a_kind_of(Integer))
-      expense.merge('id' => parsed['expense'])
+      expense.merge('id' => parsed['expense_id'])
     end
 
     it 'records submitted expenses' do
-      pending 'Need to persist expenses'
       coffee = post_expense({
           'payee' => 'Starbucks',
           'amount' => 5.75,
@@ -35,7 +34,7 @@ module ExpenseTracker
       zoo = post_expense({
           'payee' => 'zoo',
           'amount' => 15.25,
-          'data' => '2017-06-10'
+          'date' => '2017-06-10'
         })
 
       groceries = post_expense({
